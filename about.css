@@ -216,6 +216,18 @@ nav ul li a.active {
         width: 180px;
         height: 180px;
     }
+    .about-container {
+            width: 90%; /* Adjusts width to fit smaller screens */
+            padding: 20px;
+        }
+    
+        .email-link {
+            display: inline-block; /* Ensures the link stays within the box */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            text-align: center;
+            font-size: 16px;
+        }
 
     .education-container {
         padding: 20px;
@@ -223,14 +235,5 @@ nav ul li a.active {
 
     .education-text {
         text-align: center;
-    }
-
-    .project-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .project-card {
-        width: 90%;
     }
 }
