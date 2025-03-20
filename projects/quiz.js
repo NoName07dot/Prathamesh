@@ -2,7 +2,7 @@ const quizData = [
     {
         question: "Who has the fastest wicketing record?",
         a: "MS Dhoni",
-        b: "Virat Kholi",
+        b: "Virat Kohli",
         c: "Rohit Sharma",
         d: "Sanju Samson",
         correct: "a",
@@ -10,9 +10,9 @@ const quizData = [
     {
         question: "Which player has the highest score in IPL cricket?",
         a: "Rohit Sharma",
-        b: "Hardik Pandey",
-        c: "Shubham Gill",
-        d: "Virat Kholi",
+        b: "Hardik Pandya",
+        c: "Shubman Gill",
+        d: "Virat Kohli",
         correct: "d",
     },
     {
@@ -25,18 +25,18 @@ const quizData = [
     },
     {
         question: "Under which captain did India win all ICC trophies?",
-        a: "Shubham Gill",
+        a: "Shubman Gill",
         b: "Suryakumar Yadav",
         c: "MS Dhoni",
-        d: "Hardik Pandey",
+        d: "Hardik Pandya",
         correct: "c",
     },
     {
-        question: "Which team win the 2024 T20 World Cup?",
+        question: "Which team won the 2024 T20 World Cup?",
         a: "Pakistan",
         b: "India",
         c: "Australia",
-        d: "Africa",
+        d: "South Africa",
         correct: "b",
     },
     {
@@ -44,7 +44,7 @@ const quizData = [
         a: "Shane Warne",
         b: "Glenn McGrath",
         c: "Muttiah Muralitharan",
-        d: "Jasprit Bhumra",
+        d: "Jasprit Bumrah",
         correct: "c",
     },
     {
@@ -56,7 +56,7 @@ const quizData = [
         correct: "b",
     },
     {
-        question: "Which country has won the most ICC Cricket World Cup?",
+        question: "Which country has won the most ICC Cricket World Cups?",
         a: "India",
         b: "Australia",
         c: "West Indies",
@@ -64,7 +64,7 @@ const quizData = [
         correct: "b",
     },
     {
-        question: "Which Team did India defeat in the 2011 World Cup Final?",
+        question: "Which team did India defeat in the 2011 World Cup Final?",
         a: "Pakistan",
         b: "Sri Lanka",
         c: "Australia",
@@ -81,66 +81,86 @@ const quizData = [
     }
 ];
 
-const quiz = document.getElementById('quiz')
-const answerEls = document.querySelectorAll('.answer')
-const questionEl = document.getElementById('question')
-const a_text = document.getElementById('a_text')
-const b_text = document.getElementById('b_text')
-const c_text = document.getElementById('c_text')
-const d_text = document.getElementById('d_text')
-const submitBtn = document.getElementById('submit')
+const quiz = document.getElementById('quiz');
+const answerEls = document.querySelectorAll('.answer');
+const questionEl = document.getElementById('question');
+const a_text = document.getElementById('a_text');
+const b_text = document.getElementById('b_text');
+const c_text = document.getElementById('c_text');
+const d_text = document.getElementById('d_text');
+const submitBtn = document.getElementById('submit');
 
-let currentQuiz = 0
-let score = 0
+let currentQuiz = 0;
+let score = 0;
 
-loadQuiz()
+loadQuiz();
 
 function loadQuiz() {
-    deselectAnswers()
+    deselectAnswers();
 
-    const currentQuizData = quizData[currentQuiz]
-
-    questionEl.innerText = currentQuizData.question
-    a_text.innerText = currentQuizData.a
-    b_text.innerText = currentQuizData.b
-    c_text.innerText = currentQuizData.c
-    d_text.innerText = currentQuizData.d
+    const currentQuizData = quizData[currentQuiz];
+    questionEl.innerText = currentQuizData.question;
+    a_text.innerText = currentQuizData.a;
+    b_text.innerText = currentQuizData.b;
+    c_text.innerText = currentQuizData.c;
+    d_text.innerText = currentQuizData.d;
+    
+    // Reset button state
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Submit";
 }
 
 function deselectAnswers() {
-    answerEls.forEach(answerEl => answerEl.checked = false)
+    answerEls.forEach(answerEl => {
+        answerEl.checked = false;
+        answerEl.parentElement.style.color = "#000"; // Reset text color
+    });
 }
 
 function getSelected() {
-    let answer
+    let selectedAnswer = null;
 
     answerEls.forEach(answerEl => {
-        if(answerEl.checked) {
-            answer = answerEl.id
+        if (answerEl.checked) {
+            selectedAnswer = answerEl.id;
         }
-    })
+    });
 
-    return answer
+    return selectedAnswer;
 }
 
 submitBtn.addEventListener('click', () => {
-    const answer = getSelected()
-    
-    if(answer) {
-        if(answer === quizData[currentQuiz].correct) {
-            score++
+    const selectedAnswer = getSelected();
+
+    if (selectedAnswer) {
+        submitBtn.disabled = true; // Prevent multiple clicks
+        const correctAnswer = quizData[currentQuiz].correct;
+        
+        // Highlight answers
+        answerEls.forEach(answerEl => {
+            if (answerEl.id === correctAnswer) {
+                answerEl.parentElement.style.color = "green"; // Highlight correct answer
+            } else if (answerEl.id === selectedAnswer) {
+                answerEl.parentElement.style.color = "red"; // Highlight wrong answer
+            }
+        });
+
+        if (selectedAnswer === correctAnswer) {
+            score++;
         }
 
-        currentQuiz++
+        setTimeout(() => {
+            currentQuiz++;
 
-        if(currentQuiz < quizData.length) {
-            loadQuiz()
-        } else {
-            quiz.innerHTML = `
-                <h2>You answered ${score}/${quizData.length} questions correctly</h2>
-
-                <button onclick="location.reload()">Reload</button>
-            `
-        }
+            if (currentQuiz < quizData.length) {
+                loadQuiz();
+            } else {
+                quiz.innerHTML = `
+                    <h2>You answered ${score}/${quizData.length} questions correctly!</h2>
+                    <p>🎉 Great job! Want to try again?</p>
+                    <button onclick="location.reload()">Restart Quiz</button>
+                `;
+            }
+        }, 1000); // 1-second delay before loading next question
     }
-})
+});
